@@ -1,0 +1,4 @@
+name = "GeoUtils"
+uuid = "dbfbe12a-c585-4ac8-a59b-373b5807981c"
+authors = ["Lorenzo Candioti <lorenzo.candioti@bluewin.ch>"]
+version = "0.1.0"
