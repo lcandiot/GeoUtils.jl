@@ -2,3 +2,11 @@ name = "GeoUtils"
 uuid = "dbfbe12a-c585-4ac8-a59b-373b5807981c"
 authors = ["Lorenzo Candioti <lorenzo.candioti@bluewin.ch>"]
 version = "0.1.0"
+
+[deps]
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+DocumenterVitepress = "4710194d-e776-4893-9690-8d956a29c365"
+
+[compat]
+CairoMakie = "0.15.3"
+DocumenterVitepress = "0.2.6"
