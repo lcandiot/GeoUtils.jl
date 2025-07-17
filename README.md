@@ -7,4 +7,7 @@ A collection of functions that are hopefully useful to facilitate workflows for 
 
 ## Visualisation routines
 ### Plot updates in CairoMakie
-When monitoring convergence in geodynamic solvers or running simulations it is often very useful to visualize the evolution of diagnostic quantities in (pseudo-) time. The functions `update_CairoMakie_plot!(...)` facilitate the update of plots within loops.
+When monitoring convergence in geodynamic solvers or running simulations it is often very useful to visualize the evolution of diagnostic quantities in (pseudo-) time. The functions `update_plot_Makie!(...)` facilitate the update of plots within loops.
+
+### Kernel density maps
+The `kde_map_Makie!(...)` functions plot kernel-density distributions of bivariate data.
