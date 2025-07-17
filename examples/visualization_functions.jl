@@ -1,7 +1,9 @@
 # Some examples showcasing the use of visualization functions
 using GeoUtils, CairoMakie, Random
 
-function run_main()
+function run_main(;
+    save_figure :: Bool = false
+    )
     # Randomness
     rng  = Random.MersenneTwister()
     seed = 123
@@ -46,9 +48,12 @@ function run_main()
     kde_map_Makie!(GL, x, y)
     display(fg2)
 
+    if save_figure
+        save("./docs/public/kde_map_Makie.png", fg2, px_per_unit = 2)
+    end
     # Return nothing
     return nothing
 end
 
 # Run main
-run_main();
+run_main(; save_figure = true);
