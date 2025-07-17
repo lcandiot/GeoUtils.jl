@@ -1,7 +1,12 @@
 # Some examples showcasing the use of visualization functions
-using GeoUtils, CairoMakie
+using GeoUtils, CairoMakie, Random
 
 function run_main()
+    # Randomness
+    rng  = Random.MersenneTwister()
+    seed = 123
+    Random.seed!(rng, seed)
+
     # Generate some dummy data
     x   = [i for i in 1:10]
     y   = [j for j in 1:10]
@@ -26,10 +31,20 @@ function run_main()
     y1[[4, 8]] .= 2
 
     # Update plot
-    update_CairoMakie_plot!(Plot1D(), sc1, x, y1)
-    update_CairoMakie_plot!(Plot1D(), ln1, x, y1)
-    update_CairoMakie_plot!(Plot2D(), hm1, z2D')
+    update_plot_Makie!(Plot1D(), sc1, x, y1)
+    update_plot_Makie!(Plot1D(), ln1, x, y1)
+    update_plot_Makie!(Plot2D(), hm1, z2D')
     display(fig)
+
+    # Density map
+    x = randn(rng, 100)
+    y = randn(rng, 100)
+
+    # Visualize
+    fg2 = Figure()
+    GL = fg2[1,1] = GridLayout()
+    kde_map_Makie!(GL, x, y)
+    display(fg2)
 
     # Return nothing
     return nothing
