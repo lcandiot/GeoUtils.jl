@@ -28,3 +28,5 @@ When monitoring convergence in geodynamic solvers or running simulations it is o
 
 ### Kernel density maps
 The `kde_map_Makie!(...)` functions plot kernel-density distributions of bivariate data.
+
+![](https://github.com/lcandiot/GeoUtils.jl/blob/main/docs/public/kde_map_Makie.png)
