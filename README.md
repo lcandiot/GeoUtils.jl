@@ -6,10 +6,10 @@ A collection of functions that are hopefully useful to facilitate workflows for 
 > 🚧 This package is under constant development. 🚧
 
 ## 📦 Installation
-To install GeoUtils, add the package from the Manager
+To install GeoUtils, add the package directly from GitHub
 ```
 using Pkg
-Pkg.add("GeoUtils")
+Pkg.add("https://github.com/lcandiot/GeoUtils.jl.git")
 ```
 
 To use it in your scripts or in the REPL type
