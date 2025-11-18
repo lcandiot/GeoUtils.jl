@@ -9,7 +9,7 @@ A collection of functions that are hopefully useful to facilitate workflows for 
 To install GeoUtils, add the package directly from GitHub
 ```
 using Pkg
-Pkg.add("https://github.com/lcandiot/GeoUtils.jl.git")
+Pkg.add(url="https://github.com/lcandiot/GeoUtils.jl.git")
 ```
 
 To use it in your scripts or in the REPL type
