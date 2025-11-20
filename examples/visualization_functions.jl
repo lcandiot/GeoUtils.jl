@@ -51,6 +51,12 @@ function run_main(;
     if save_figure
         save("./docs/public/kde_map_Makie.png", fg2, px_per_unit = 2)
     end
+
+    # Write a GIF from existing pngs
+    src_dir  = "/Users/lcandiot/Developer/DevelopersCard/Solvers/CompressibleStokes/png/Popov2025_shear_perzyna"
+    str_root = "Popov2025_shear_perzyna"
+    write_gif(src_dir, str_root)
+
     # Return nothing
     return nothing
 end

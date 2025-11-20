@@ -8,7 +8,7 @@ include("GeoUtils_Macros.jl")
 # Export visualization utilities
 export PlotType
 export Plot1D, Plot2D
-export update_plot_Makie!, kde_map_Makie!
+export update_plot_Makie!, kde_map_Makie!, write_gif
 
 # Export macros
 export @Av, @Av_xa, @Av_ya, @Av_xi, @Av_yi

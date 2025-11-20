@@ -1,4 +1,4 @@
-using CairoMakie, DocumenterVitepress
+using CairoMakie, DocumenterVitepress, FFMPEG
 # ----------------------------------------- #
 #|       Update CairoMakie plots           |#
 # ----------------------------------------- #
@@ -19,10 +19,10 @@ Updates a CairoMakie plot without emptying axis or recalling the plot itself. Ar
 * `x`, `y`, `z`                 : Data used to update the plot
 """
 function update_plot_Makie!(
-        :: Plot1D,
-    plh :: Union{Scatter{Tuple{Vector{Point{2, Float64}}}}, Lines{Tuple{Vector{Point{2, Float64}}}}},
-    x   :: AbstractArray,
-    y   :: AbstractArray
+        ::Plot1D,
+    plh ::Union{Scatter{Tuple{Vector{Point{2, Float64}}}}, Lines{Tuple{Vector{Point{2, Float64}}}}},
+    x   ::AbstractArray,
+    y   ::AbstractArray
 )
     # Form new data and update
     data = [Point2f(x[i], y[i]) for i in eachindex(x)]
@@ -32,9 +32,9 @@ function update_plot_Makie!(
     return nothing
 end
 function update_plot_Makie!(
-        :: Plot2D,
-    plh :: Heatmap{Tuple{Vector{Float64}, Vector{Float64}, Matrix{Float32}}},
-    z   :: AbstractArray
+        ::Plot2D,
+    plh ::Heatmap{Tuple{Vector{Float64}, Vector{Float64}, Matrix{Float32}}},
+    z   ::AbstractArray
 )
     # Update
     plh[3][] = z
@@ -70,17 +70,17 @@ Creates a 2D kernel-density map and visualizes the density into an existing Grid
 * `xlabel`, `ylabel` : Labels used on axes
 """
 function kde_map_Makie!(
-    GL        :: GridLayout,
-    x         :: AbstractArray,
-    y         :: AbstractArray;
-    σx        :: Float64                        = 1.0,
-    σy        :: Float64                        = 1.0,
-    npts      :: Int64                          = 100,
-    marg      :: Symbol                         = :hist,
-    colormap  :: Union{Symbol, Reverse{Symbol}} = Reverse(:bilbao),
-    bar_color :: Union{Symbol, Reverse{Symbol}} = :skyblue,
-    xlabel    :: AbstractString                 = "x",
-    ylabel    :: AbstractString                 = "y"
+    GL        ::GridLayout,
+    x         ::AbstractArray,
+    y         ::AbstractArray;
+    σx        ::Float64                        = 1.0,
+    σy        ::Float64                        = 1.0,
+    npts      ::Int64                          = 100,
+    marg      ::Symbol                         = :hist,
+    colormap  ::Union{Symbol, Reverse{Symbol}} = Reverse(:bilbao),
+    bar_color ::Union{Symbol, Reverse{Symbol}} = :skyblue,
+    xlabel    ::AbstractString                 = "x",
+    ylabel    ::AbstractString                 = "y"
 )
     # Set limits
     xmin, xmax = minimum(x), maximum(x)
@@ -132,6 +132,58 @@ function kde_map_Makie!(
     xlims!(ax2, (xmin, xmax))
     ylims!(ax3, (ymin, ymax))
 
+    # Return
+    return nothing
+end
+
+# ----------------------------------------- #
+#|       Update CairoMakie plots           |#
+# ----------------------------------------- #
+"""
+# Methods:
+
+    write_gif(::String, ::String; kwargs...)
+
+# Description:
+
+Writes a GIF from pngs.
+
+# Arguments:
+
+* `src_dir`      : Path to png directory
+* `str_root`     : The root of png name. This will be used to name the GIF
+
+# Keyword arguments:
+
+* `fps`     : Frame rate
+"""
+function write_gif(
+    src_dir  ::String,
+    str_root ::String;
+    fps      ::Float64 = 5.0
+    )
+
+    # See which files already exist
+    dir_list = readdir(src_dir)
+
+    # Remove existing color palettes and GIFs
+    idx_palette = findfirst(x -> x == "palette.png", dir_list)
+    if !isnothing(idx_palette)
+        rm("$(src_dir)/palette.png")
+    end
+
+    # Create a new palette
+    @ffmpeg_env run(`$(FFMPEG.ffmpeg) -pattern_type glob -i $(src_dir)/$(str_root)'*'.png -vf palettegen $(src_dir)/palette.png`)
+    
+    # Remove any existing version of the GIF
+    idx_GIF = findfirst(x -> contains(x, ".gif"), dir_list)
+    if !isnothing(idx_GIF)
+        rm("$(src_dir)/$(str_root).gif")
+    end
+
+    # Write GIF
+    @ffmpeg_env run(`$(FFMPEG.ffmpeg) -framerate $(fps) -pattern_type glob -i $(src_dir)/$(str_root)'*'.png -i $(src_dir)/palette.png -filter_complex "paletteuse" "$(src_dir)/$(str_root).gif"`)
+    
     # Return
     return nothing
 end
