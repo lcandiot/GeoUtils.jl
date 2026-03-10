@@ -161,7 +161,7 @@ function write_gif(
     src_dir  ::String,
     str_root ::String;
     fps      ::Float64 = 5.0
-    )
+)
 
     # See which files already exist
     dir_list = readdir(src_dir)
@@ -184,6 +184,92 @@ function write_gif(
     # Write GIF
     @ffmpeg_env run(`$(FFMPEG.ffmpeg) -framerate $(fps) -pattern_type glob -i $(src_dir)/$(str_root)'*'.png -i $(src_dir)/palette.png -filter_complex "paletteuse" "$(src_dir)/$(str_root).gif"`)
     
+    # Return
+    return nothing
+end
+
+# ----------------------------------------- #
+#|       Mineral phase abundance plot      |#
+# ----------------------------------------- #
+"""
+# Methods:
+
+    plot_mineral_abundance_Makie!(ax, df; kwargs...)
+
+# Description:
+
+Plots mineral abundance data using Makie.
+
+# Arguments:
+
+* `ax`           : Axis object
+* `df`           : DataFrame containing the data. First column will be used as x-axis (e.g., temperature), and the rest of the columns will be used as y-axis (e.g., mineral abundances). The column names will be used as labels for the legend.
+
+# Keyword arguments:
+
+* `normalize`     : Whether to normalize the data
+* `sys_unit`      : System of units ("frac" or "wt")
+"""
+function plot_mineral_abundance_Makie!(
+    ax        ::Axis,
+    df        ::DataFrame;
+    normalize ::Bool = false,
+    sys_unit  ::String = "frac"
+)
+    # Set units
+    fact = 1.0
+    if sys_unit == "wt"
+        fact = 100.0
+    end
+
+    # Get colormap
+    colormap = cgrad(:bilbao, length(names(df)) - 1; categorical = true)
+
+    # Clean up data frame and extract header
+    for (iCol, Col) in enumerate(eachcol(df))
+        findall(x -> ~isa(x, Union{Float64, Int64}), Col) |> idx -> df[idx, iCol] .= 0.0
+        df[!, iCol] = convert.(Float64, Col)
+    end
+
+    # Normalize if requested
+    if normalize
+        for iRow in axes(df, 1)
+            row_sum = sum(df[iRow, 2:end])
+            row_sum == 0.0 ? continue : nothing
+            abund = [df[iRow, iCol] for iCol in axes(df, 2) if iCol != 1]
+            abund ./= row_sum
+            for (iCol, _) in enumerate(df[iRow, 2:end])
+                df[iRow, iCol + 1] = abund[iCol] * fact
+            end
+        end
+    end
+
+    # Set baseline to 0.0 and loop through phase
+    baseline = [0.0 for _ in eachrow(df)]
+    for (iCol, Col) in enumerate(eachcol(df))
+        # First column must be temperature -> skip
+        iCol == 1 ? continue : nothing
+
+        # Extract phase abundance
+        phase = names(df)[iCol]
+
+        # Skip if phase abundance is 0 for every point
+        sum(Col) == 0.0 ? continue : nothing
+
+        # Add band and text for current phase
+        band!(ax, Float64.(df[:, 1]), baseline, baseline .+ Col, color = colormap[iCol-1])
+        idx = argmax(Col)
+        position = [df[idx, 1], baseline[idx] + Col[idx] / 2]
+        idx == 1 ? position[1] = df[idx, 1] + 20.0 : nothing
+        idx == size(Col, 1) ? position[1] = df[idx, 1] - 20.0 : nothing
+        txt_col = :white
+        iCol > cld(size(Col, 1), 2) ? txt_col = :black : nothing
+        text!(ax, phase, position = (position[1], position[2]), align = (:center, :center), color = txt_col)
+
+        # Update baseline
+        baseline .+= Col
+    end
+
     # Return
     return nothing
 end
