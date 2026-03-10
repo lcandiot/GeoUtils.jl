@@ -1,4 +1,4 @@
-using CairoMakie, DocumenterVitepress, FFMPEG
+using CairoMakie, DocumenterVitepress, FFMPEG, DataFramesMeta, DelimitedFiles
 # ----------------------------------------- #
 #|       Update CairoMakie plots           |#
 # ----------------------------------------- #

@@ -1,10 +1,12 @@
 name = "GeoUtils"
 uuid = "dbfbe12a-c585-4ac8-a59b-373b5807981c"
-authors = ["Lorenzo Candioti <lorenzo.candioti@bluewin.ch>"]
 version = "0.1.0"
+authors = ["Lorenzo Candioti <lorenzo.candioti@bluewin.ch>"]
 
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+DataFramesMeta = "1313f7d8-7da2-5740-9ea0-a2ca25f37964"
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 DocumenterVitepress = "4710194d-e776-4893-9690-8d956a29c365"
 FFMPEG = "c87230d0-a227-11e9-1b43-d7ebe4e7570a"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
@@ -12,7 +14,9 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
 CairoMakie = "0.15.3"
-DocumenterVitepress = "0.2.6"
+DataFramesMeta = "0.15.6"
+DelimitedFiles = "1.9.1"
+DocumenterVitepress = "0.3.2"
 FFMPEG = "0.4.5"
 Random = "1.11.0"
 Test = "1.11.0"
